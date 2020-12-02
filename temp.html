@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>计算一段时间内的周末和工作日</title>
+  <script>
+    
+
+
+    function 毫秒数转日期(毫秒数){
+      标准格式= new Date(毫秒数)
+      年 = 标准格式.getFullYear();  
+      月 = 标准格式.getMonth() + 1;  
+      if (月 < 10) 月 = "0" + 月;  
+          日 = 标准格式.getDate();  
+      if (日 < 10) 日 = "0" + 日;  
+      return (年 + "-" + 月 + "-" + 日);
+    }
+
+    function YYYYMMDD2毫秒数(YYYYMMDD){
+      拆分后的列表 = YYYYMMDD.split("-")
+      MMDDYYYY = new Date(拆分后的列表[1] + '-' + 拆分后的列表[2] + '-' + 拆分后的列表[0]) //转换为MM-DD-YYYY格式    
+      毫秒数 = Math.abs(MMDDYYYY)
+      return  毫秒数
+    }
+
+    function 给定日期和天数计算所求日期函数(给定日期, 天数) {  
+            毫秒数 = YYYYMMDD2毫秒数(给定日期) 
+            毫秒数=毫秒数+ (天数 * 24 * 60 * 60 * 1000)
+            所求日期=毫秒数转日期(毫秒数)
+            return  所求日期
+        } 
+ 
+    function 函数(){
+      // 以2020-10-31和2020-11-1为开始计算周末
+    开始日期对象=document.getElementById("开始日期")
+    结束日期对象=document.getElementById("结束日期")
+    开始日期值=开始日期对象.value
+    结束日期值=结束日期对象.value
+    结果对象=document.getElementById('结果')
+
+
+    开始日期的毫秒数=YYYYMMDD2毫秒数(开始日期值)
+    结束日期的毫秒数=YYYYMMDD2毫秒数(结束日期值)
+    预设周六的毫秒数=YYYYMMDD2毫秒数("2020-10-31")
+    七天的毫秒数=7*24*60*60*1000
+    相差的毫秒数=结束日期的毫秒数-预设周六的毫秒数
+
+    for(循环参数=0;循环参数<相差的毫秒数;循环参数+=七天的毫秒数){
+
+    }
+
+
+    周末列表=[]
+    for (循环参数=0;循环参数<相差的毫秒数;循环参数+=七天的毫秒数){
+      周六毫秒数=预设周六的毫秒数+循环参数
+      周日毫秒数=周六毫秒数+(24* 60 *60* 1000)
+      周六循环日期=毫秒数转日期(周六毫秒数)
+      周日循环日期=毫秒数转日期(周日毫秒数)
+      周末列表.push(周六循环日期,周日循环日期)
+    }
+
+    结果对象.innerHTML+="共"+(周末列表.length)+"天:"+周末列表
+  }
+    
+ </script>
+</head>
+<body onload="document.getElementById('开始日期').focus()">
+  <center>
+    <p>计算一段时间内的周末和工作日,注:开始日期必须在2020-11-01以后</p>
+    <p>时间格式为：2020-01-01格式！</p>
+    <p>请输入开始时间</p>
+  <input id="开始日期" type="text">
+  <p>请输入结束时间段</p>
+  <input id="结束日期" type="text" onkeydown="if(event.keyCode==13)document.getElementById('提交').click()">
+  <br><br><br>
+  <button id="提交" onclick="函数()">提交</button>
+  <p id="结果">结果:</p>
+  </center>
+</body>
+</html>
