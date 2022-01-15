@@ -55,16 +55,15 @@ single_lined_list= single_lined(sorted_list)
 input_Value=input("请输入你要提取或查询的月份:(注:必须是两位数)")
 
 
+
 # for循环找出匹配的项目列表:list_Of_under_number
-list_Of_under_number=[]
+list_Of_required=[]
 for i in sorted_list:
     j=(i[0].split("-")[1])
     # print(j)
     if  j==input_Value:
-        list_Of_under_number.append(i)
+        list_Of_required.append(i)
 
     
-# print(list_Of_under_number)
-
-# print(single_lined(list_Of_under_number))
-
+print(list_Of_required)
+print(single_lined(list_Of_required))
