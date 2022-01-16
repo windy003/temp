@@ -1,10 +1,10 @@
 若所查询的月份在两个页面中,则更改源文件名,
 
-get_required_data(one page).py:
+get_required_data_one_page).py:
 这个文件是只在数据全在一个页面下运行的
 
 
-get_required_data(two page) .py:
+get_required_data_two_page).py:
 这个文件是只在数据在两个页面下运行的,如果两个页面就运行两次,文件名分别设置为1,2,并在修改数据源HTML
 
 merge_list.py:是合并两个数据的python文件
