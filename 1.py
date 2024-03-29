@@ -1,61 +1,53 @@
-from flask import Flask, request, send_file, after_this_request
-import yt_dlp
-import os
+from flask import Flask, request, render_template_string, redirect, url_for
 
+# 创建Flask应用
 app = Flask(__name__)
 
-@app.route("/")
+# 简单的用户数据库
+users = {}
+
+# 首页路由
+@app.route('/')
 def index():
-    return """
-    <h1>YouTube 音频下载器</h1>
-    <p>请输入 YouTube 视频链接：</p>
-    <form method="post" action="/download">
-        <input type="text" name="url" />
-        <input type="submit" value="下载" />
-    </form>
-    """
+    return "<a href='/register'>注册</a> | <a href='/login'>登录</a>"
 
-@app.route("/download", methods=["POST"])
-def download():
-    url = request.form["url"]
-    video_id = url.split("v=")[1]
-    audio_file = download_audio(video_id)
+# 注册页面
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username not in users:
+            users[username] = password
+            return redirect(url_for('login'))
+        else:
+            return '该用户名已存在！'
+    return render_template_string("""
+        <form method="post">
+            用户名：<input type="text" name="username"><br>
+            密码：<input type="password" name="password"><br>
+            <input type="submit" value="注册">
+        </form>
+    """)
 
-    if audio_file and os.path.exists(audio_file):
-        @after_this_request
-        def remove_file(response):
-            try:
-                os.remove(audio_file)
-            except Exception as error:
-                app.logger.error("Error removing file: %s", error)
-            return response
+# 登录页面
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username in users and users[username] == password:
+            return '登录成功！'
+        else:
+            return '用户名或密码错误！'
+    return render_template_string("""
+        <form method="post">
+            用户名：<input type="text" name="username"><br>
+            密码：<input type="password" name="password"><br>
+            <input type="submit" value="登录">
+        </form>
+    """)
 
-        return send_file(audio_file, as_attachment=True)
-    else:
-        return "下载失败", 500
-
-def download_audio(video_id):
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': '/path/to/download/%(title)s.%(ext)s',  # 修改为实际的下载路径
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-        'quiet': True
-    }
-
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            video_url = f"http://www.youtube.com/watch?v={video_id}"
-            info = ydl.extract_info(video_url, download=True)
-            audio_title = info.get('title', 'downloaded_audio')
-            return os.path.join('/path/to/download', f"{audio_title}.mp3")
-        except Exception as e:
-            print(f"Error: {e}")
-            return None
-
-if __name__ == "__main__":
+# 运行Flask应用
+if __name__ == '__main__':
     app.run(debug=True)
-
