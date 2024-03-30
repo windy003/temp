@@ -5,7 +5,8 @@ from libcloud.compute.providers import get_driver
 cls = get_driver(Provider.AWS)
 driver = cls('access key', 'secret key', region='us-east-1')
 
-# 连接成功后可以进行其他操作，例如列出所有服务器
-nodes = driver.list_nodes()
-for node in nodes:
-    print(node.name)
+# 创建一个新的虚拟机
+image = driver.list_images()[0]  # 选择镜像
+size = driver.list_sizes()[0]    # 选择规格
+node = driver.create_node(name='my-instance', image=image, size=size)
+print(node)
