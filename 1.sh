@@ -1,22 +1,13 @@
-_wudao() 
-{
-    local cur prev opts
-    COMPREPLY=()
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="--help --kill --short-desc"
-    optl="
-the
-admitting
-"
-
-    if [[ ${cur} == -* ]] ; then
-        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
-        return 0
-    else
-        COMPREPLY=( $(compgen -W "${optl}" -- ${cur}) )
-        return 0
-    fi
+#!/bin/bash
+#
+# Usage: curl https://pyenv.run | bash
+#
+# For more info, visit: https://github.com/pyenv/pyenv-installer
+#
+index_main() {
+    set -e
+    curl -s -S -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
 }
-complete -F _wudao wd
+
+index_main
 
